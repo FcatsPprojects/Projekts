@@ -108,7 +108,6 @@ else:
 
 # Here starts the main part
 answer_id=random.randint(1,total_items)
-print(answer_id)
 guess=input()
 for row in cur.execute(f'SELECT anime_id FROM anime WHERE title_jp="{guess}" LIMIT 1'):
     guess_id=list(row)
@@ -163,3 +162,29 @@ else:
 # also ive found writing logs like this kinda fun, just putting my thoughts somewhere
 # or its because i can feel productive while not doing anything
 # probably the latter
+# 
+# this is written later, hence the space
+# so basically, gamemodes
+# know it all (uses the whole db)
+# normal, official, whatever you want to call it (only uses anime with a mal rating above 6.5)
+# should probably make a mode where its only from anime with certain genres, but overlap makes that a bit hard
+# yea thats it mostly
+# know it all is easiest to make so start with that
+# and its gonna be probably the only one for the exam thingymajig
+# i mean its literaly make guessing infinite, show gray, yellow, green, up, down, that type stuff
+# oh and i guess i can keep track of player stats in the database
+# is there even anything else id need?
+# well documentation obv but...
+# ok well "normal" mode isnt that hard to make, you just limit the ids it can pick
+# OOOH i have to add oop as well...
+# ummmm getting stuff from the db can be made in
+# HOLD THAT THOUGHT
+# I CAN MAKE THE GUESSING INTO A CLASS
+# need figure out the specifics but not bad idea eh?
+# i also need sonething with parent-child class dynamic thingymajig
+# ill figure that out tmr
+# ill see if i make a log
+# i mean i probably will right? since i will get lazy and need to look productive
+# alright ill see if i can/want to do something more today and go sleep
+# waking up at 0630 seems...
+# yea why not
