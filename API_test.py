@@ -33,7 +33,7 @@ if last_item[0]==total_items:
     ...
 elif last_item[0]==0:
     for e in data["data"]:
-        anime=[e["title"], e["title_english"]]
+        anime=[str(e["title"]).upper(), str(e["title_english"]).upper()]
         info=[counter, e["type"], e["source"], e["episodes"], e["score"]]
         counter+=1
         aired=e["aired"]
@@ -61,7 +61,7 @@ elif last_item[0]==0:
         # program 2 fast ig :P
         time.sleep(1)
         for e in data["data"]:
-            anime=[e["title"], e["title_english"]]
+            anime=[str(e["title"]).upper(), str(e["title_english"]).upper()]
             info=[counter, e["type"], e["source"], e["episodes"], e["score"]]
             counter+=1
             aired=e["aired"]
@@ -86,7 +86,7 @@ else:
         data=req.json()
         time.sleep(1)
         for e in data["data"]:
-            anime=[e["title"], e["title_english"]]
+            anime=[str(e["title"]).upper(), str(e["title_english"]).upper()]
             info=[counter, e["type"], e["source"], e["episodes"], e["score"]]
             counter+=1
             aired=e["aired"]
@@ -107,16 +107,27 @@ else:
 
 
 # Here starts the main part
+# Nvm still setup
 answer_id=random.randint(1,total_items)
-guess=input()
-for row in cur.execute(f'SELECT anime_id FROM anime WHERE title_jp="{guess}" LIMIT 1'):
-    guess_id=list(row)
-guess_id.append(0)
-guess_id=int(guess_id[0])
-if guess_id==answer_id:
-    print("You did it, Yippee")
-else:
-    print(f"what are you dumb {guess_id}")
+for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={answer_id} LIMIT 1'):
+    answer_info=list(row)
+guess_id=[]
+while guess_id!=answer_id:
+    print(answer_id)
+    guess_id=[]
+    # Ok now we start
+    guess=input()
+    for row in cur.execute(f'SELECT anime_id FROM anime WHERE title_jp="{guess.upper()}" LIMIT 1'):
+        guess_id=list(row)
+    guess_id.append(0)
+    guess_id=int(guess_id[0])
+    for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={guess_id} LIMIT 1'):
+        give_info=list(row)
+    print(f"{give_info}")
+
+print("You did it, Yippee")
+
+# API INFO
 
 # title(a switch for jp/en), type, source, episodes
 # keys: "title" "title_english" "type" "source" "episodes"
