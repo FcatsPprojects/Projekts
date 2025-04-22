@@ -121,9 +121,50 @@ while guess_id!=answer_id:
         guess_id=list(row)
     guess_id.append(0)
     guess_id=int(guess_id[0])
-    for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={guess_id} LIMIT 1'):
-        give_info=list(row)
-    print(f"{give_info}")
+    if guess_id!=0:
+        for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={guess_id} LIMIT 1'):
+            give_info=list(row)
+        print(f"{give_info}")
+
+        if give_info[0]==answer_info[0]:
+            give_info[0]="yes"
+        else:
+            give_info[0]="no"
+
+        if give_info[1]==answer_info[1]:
+            give_info[1]="yes"
+        else:
+            give_info[1]="no"
+        
+        if give_info[2]==answer_info[2]:
+            give_info[2]="yes"
+        elif give_info[2]<answer_info[2]:
+            give_info[2]="more"
+        else:
+            give_info[2]="less"
+
+        if give_info[3]==answer_info[3]:
+            give_info[3]="yes"
+        elif give_info[3]<answer_info[3]:
+            give_info[3]="more"
+        else:
+            give_info[3]="less"
+        
+        if give_info[4]==answer_info[4]:
+            give_info[4]="yes"
+        else:
+            give_info[4]="no"
+
+        if give_info[5]==answer_info[5]:
+            give_info[5]="yes"
+        elif give_info[5]<answer_info[5]:
+            give_info[5]="more"
+        else:
+            give_info[5]="less"
+        
+        print(give_info)
+    else:
+        print("Invalid guess")
 
 print("You did it, Yippee")
 
