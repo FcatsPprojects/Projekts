@@ -113,7 +113,6 @@ for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, air
     answer_info=list(row)
 guess_id=[]
 while guess_id!=answer_id:
-    print(answer_id)
     guess_id=[]
     # Ok now we start
     guess=input()
@@ -143,12 +142,15 @@ while guess_id!=answer_id:
         else:
             give_info[2]="less"
 
-        if give_info[3]==answer_info[3]:
-            give_info[3]="yes"
-        elif give_info[3]<answer_info[3]:
-            give_info[3]="more"
+        if type(give_info[3])==type(answer_info[3]):
+            if give_info[3]==answer_info[3]:
+                give_info[3]="yes"
+            elif give_info[3]<answer_info[3]:
+                give_info[3]="more"
+            else:
+                give_info[3]="less"
         else:
-            give_info[3]="less"
+            give_info[3]="no"
         
         if give_info[4]==answer_info[4]:
             give_info[4]="yes"
