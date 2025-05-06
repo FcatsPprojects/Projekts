@@ -107,23 +107,87 @@ else:
 
 
 # Here starts the main part
-# Nvm still setup
-answer_id=random.randint(1,total_items)
-for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={answer_id} LIMIT 1'):
-    answer_info=list(row)
+print("Normal mode: guess an anime with a MAL rating above 7.5. Type 'normal' to select")
+print("Hard mode: guess an anime from all anime on MAL. Type 'hard' to select")
+print("Select mode:")
+mode=input()
+
+if mode=="normal":
+    answer_list=[]
+    for row in cur.execute(f'SELECT anime_id FROM info WHERE score>7.5'):
+        answer_list.append(list(row))
+    answer_id=random.randint(1,len(answer_list))
+    answer_id=answer_list[answer_id]
+    answer_id=answer_id[0]
+    for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={answer_id} LIMIT 1'):
+        answer_info=list(row)
+elif mode=="hard":
+    answer_id=random.randint(1,total_items)
+    for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={answer_id} LIMIT 1'):
+        answer_info=list(row)
+else:
+    raise ValueError("Incorrect input")
+
 guess_id=[]
 while guess_id!=answer_id:
-    print(answer_id)
     guess_id=[]
     # Ok now we start
     guess=input()
+    if guess=="end":
+        print(answer_id)
+        quit()
+
     for row in cur.execute(f'SELECT anime_id FROM anime WHERE title_jp="{guess.upper()}" LIMIT 1'):
         guess_id=list(row)
     guess_id.append(0)
     guess_id=int(guess_id[0])
-    for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={guess_id} LIMIT 1'):
-        give_info=list(row)
-    print(f"{give_info}")
+    if guess_id!=0:
+        for row in cur.execute(f'SELECT type, source, episodes, score, aired_season, aired_year FROM info WHERE anime_id={guess_id} LIMIT 1'):
+            give_info=list(row)
+        print(f"{give_info}")
+
+        if give_info[0]==answer_info[0]:
+            give_info[0]="yes"
+        else:
+            give_info[0]="no"
+
+        if give_info[1]==answer_info[1]:
+            give_info[1]="yes"
+        else:
+            give_info[1]="no"
+        
+        if give_info[2]==answer_info[2]:
+            give_info[2]="yes"
+        elif give_info[2]<answer_info[2]:
+            give_info[2]="more"
+        else:
+            give_info[2]="less"
+
+        if type(give_info[3])==type(answer_info[3]):
+            if give_info[3]==answer_info[3]:
+                give_info[3]="yes"
+            elif give_info[3]<answer_info[3]:
+                give_info[3]="more"
+            else:
+                give_info[3]="less"
+        else:
+            give_info[3]="no"
+        
+        if give_info[4]==answer_info[4]:
+            give_info[4]="yes"
+        else:
+            give_info[4]="no"
+
+        if give_info[5]==answer_info[5]:
+            give_info[5]="yes"
+        elif give_info[5]<answer_info[5]:
+            give_info[5]="more"
+        else:
+            give_info[5]="less"
+        
+        print(give_info)
+    else:
+        print("Invalid guess")
 
 print("You did it, Yippee")
 
@@ -144,58 +208,58 @@ print("You did it, Yippee")
 # genres could be interesting but probably hard to impliment
 # keys: "genres" list again
 
-# DIARY
+# QVNEL
 # 
-# ENTRY #1
-# looks like lists are ordered by mal_id, studio is usually only one, could be trouble for genres
-# if want go for genres, stacking all of them feels bad but might be kinda nececary mby
-# pain to guess by, might cause misconceptions, but cant really give just one per anime
-# also if yellow, kinda dumb to test which is correct if you have like 4-6 genres, if not more
-# btw figure out how to get this shit into a db
-# but then whats the point of calling api...
-# but such a pain to get needed info from that...
-# also search could be done with db, just in py that would be list of dicts
-# and worse yet, prob need 2 for each anime if go en and jp title different
-# just read requirements and go from there, if db needed then do that, if not then pain with api
+# RAGEL #1
+# ybbxf yvxr yvfgf ner beqrerq ol zny_vq, fghqvb vf hfhnyyl bayl bar, pbhyq or gebhoyr sbe traerf
+# vs jnag tb sbe traerf, fgnpxvat nyy bs gurz srryf onq ohg zvtug or xvaqn arprpnel zol
+# cnva gb thrff ol, zvtug pnhfr zvfpbaprcgvbaf, ohg pnag ernyyl tvir whfg bar cre navzr
+# nyfb vs lryybj, xvaqn qhzo gb grfg juvpu vf pbeerpg vs lbh unir yvxr 4-6 traerf, vs abg zber
+# ogj svther bhg ubj gb trg guvf fuvg vagb n qo
+# ohg gura jungf gur cbvag bs pnyyvat ncv...
+# ohg fhpu n cnva gb trg arrqrq vasb sebz gung...
+# nyfb frnepu pbhyq or qbar jvgu qo, whfg va cl gung jbhyq or yvfg bs qvpgf
+# naq jbefr lrg, cebo arrq 2 sbe rnpu navzr vs tb ra naq wc gvgyr qvssrerag
+# whfg ernq erdhverzragf naq tb sebz gurer, vs qo arrqrq gura qb gung, vs abg gura cnva jvgu ncv
 # 
-# ENTRY #2
-# so db is needed
-# means that i get data from api, throw that in to make db, use info from there on
+# RAGEL #2
+# fb qo vf arrqrq
+# zrnaf gung v trg qngn sebz ncv, guebj gung va gb znxr qo, hfr vasb sebz gurer ba
 # 
-# ENTRY #3
-# i dont wanna do this... but i gotta i guess
-# finished the data getting part. could call it setup
-# now its time to make the actual game... ughhh
-# like it shouldnt be hard but i just dont wannaaaaaa
-# scrapped rank and studio <probably should have wrote this in the last entry
-# have an idea for genres, but might be a bit too complex to implement in 1.5 days
-# gonna leave that to later if i decide to work on this
-# also ive found writing logs like this kinda fun, just putting my thoughts somewhere
-# or its because i can feel productive while not doing anything
-# probably the latter
+# RAGEL #3
+# v qbag jnaan qb guvf... ohg v tbggn v thrff
+# svavfurq gur qngn trggvat cneg. pbhyq pnyy vg frghc
+# abj vgf gvzr gb znxr gur npghny tnzr... htuuu
+# yvxr vg fubhyqag or uneq ohg v whfg qbag jnaannnnnn
+# fpenccrq enax naq fghqvb <cebonoyl fubhyq unir jebgr guvf va gur ynfg ragel
+# unir na vqrn sbe traerf, ohg zvtug or n ovg gbb pbzcyrk gb vzcyrzrag va 1.5 qnlf
+# tbaan yrnir gung gb yngre vs v qrpvqr gb jbex ba guvf
+# nyfb vir sbhaq jevgvat ybtf yvxr guvf xvaqn sha, whfg chggvat zl gubhtugf fbzrjurer
+# be vgf orpnhfr v pna srry cebqhpgvir juvyr abg qbvat nalguvat
+# cebonoyl gur ynggre
 # 
-# this is written later, hence the space
-# so basically, gamemodes
-# know it all (uses the whole db)
-# normal, official, whatever you want to call it (only uses anime with a mal rating above 6.5)
-# should probably make a mode where its only from anime with certain genres, but overlap makes that a bit hard
-# yea thats it mostly
-# know it all is easiest to make so start with that
-# and its gonna be probably the only one for the exam thingymajig
-# i mean its literaly make guessing infinite, show gray, yellow, green, up, down, that type stuff
-# oh and i guess i can keep track of player stats in the database
-# is there even anything else id need?
-# well documentation obv but...
-# ok well "normal" mode isnt that hard to make, you just limit the ids it can pick
-# OOOH i have to add oop as well...
-# ummmm getting stuff from the db can be made in
-# HOLD THAT THOUGHT
-# I CAN MAKE THE GUESSING INTO A CLASS
-# need figure out the specifics but not bad idea eh?
-# i also need sonething with parent-child class dynamic thingymajig
-# ill figure that out tmr
-# ill see if i make a log
-# i mean i probably will right? since i will get lazy and need to look productive
-# alright ill see if i can/want to do something more today and go sleep
-# waking up at 0630 seems...
-# yea why not
+# guvf vf jevggra yngre, urapr gur fcnpr
+# fb onfvpnyyl, tnzrzbqrf
+# xabj vg nyy (hfrf gur jubyr qo)
+# abezny, bssvpvny, jungrire lbh jnag gb pnyy vg (bayl hfrf navzr jvgu n zny engvat nobir 6.5)
+# fubhyq cebonoyl znxr n zbqr jurer vgf bayl sebz navzr jvgu pregnva traerf, ohg bireync znxrf gung n ovg uneq
+# lrn gungf vg zbfgyl
+# xabj vg nyy vf rnfvrfg gb znxr fb fgneg jvgu gung
+# naq vgf tbaan or cebonoyl gur bayl bar sbe gur rknz guvatlznwvt
+# v zrna vgf yvgrenyl znxr thrffvat vasvavgr, fubj tenl, lryybj, terra, hc, qbja, gung glcr fghss
+# bu naq v thrff v pna xrrc genpx bs cynlre fgngf va gur qngnonfr
+# vf gurer rira nalguvat ryfr vq arrq?
+# jryy qbphzragngvba boi ohg...
+# bx jryy "abezny" zbqr vfag gung uneq gb znxr, lbh whfg yvzvg gur vqf vg pna cvpx
+# BBBU v unir gb nqq bbc nf jryy...
+# hzzzz trggvat fghss sebz gur qo pna or znqr va
+# UBYQ GUNG GUBHTUG
+# V PNA ZNXR GUR THRFFVAT VAGB N PYNFF
+# arrq svther bhg gur fcrpvsvpf ohg abg onq vqrn ru?
+# v nyfb arrq fbarguvat jvgu cnerag-puvyq pynff qlanzvp guvatlznwvt
+# vyy svther gung bhg gze
+# vyy frr vs v znxr n ybt
+# v zrna v cebonoyl jvyy evtug? fvapr v jvyy trg ynml naq arrq gb ybbx cebqhpgvir
+# nyevtug vyy frr vs v pna/jnag gb qb fbzrguvat zber gbqnl naq tb fyrrc
+# jnxvat hc ng 0630 frrzf...
+# lrn jul abg
